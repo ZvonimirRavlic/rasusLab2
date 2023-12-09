@@ -1,18 +1,22 @@
 package hr.fer.tel.rassus.stupidudp.beans;
 
 import com.opencsv.bean.CsvBindByName;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Reading implements Comparable<Reading>{
+public class Reading implements Comparable<Reading> {
 
     private Long id;
     @CsvBindByName(column = "NO2")
     private Double no2;
     private Long time;
     private List<Tuple> vector = new ArrayList<>();
+
+    public Reading() {
+    }
 
     public Reading(Long id, Double no2, long time, List<Tuple> vector) {
         this.id = id;
@@ -68,7 +72,16 @@ public class Reading implements Comparable<Reading>{
 
     @Override
     public int compareTo(Reading o) {
-        return this.getId().compareTo(o.getId());
+        return ObjectUtils.compare(this.no2, o.no2);
+    }
+
+    @Override
+    public String toString() {
+        return "Reading{" +
+                "no2=" + no2 +
+                ", time=" + time +
+                ", vector=" + vector +
+                '}';
     }
 }
 

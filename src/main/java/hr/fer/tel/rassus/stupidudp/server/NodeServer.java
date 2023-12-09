@@ -1,6 +1,7 @@
 package hr.fer.tel.rassus.stupidudp.server;
 
 import com.google.gson.Gson;
+import hr.fer.tel.rassus.stupidudp.Output;
 import hr.fer.tel.rassus.stupidudp.beans.ReadingServer;
 import hr.fer.tel.rassus.stupidudp.beans.Tuple;
 import hr.fer.tel.rassus.stupidudp.network.SimpleSimulatedDatagramSocket;
@@ -31,19 +32,24 @@ public class NodeServer implements Runnable {
 
     public void startServer() throws IOException {
         byte[] rcvBuf = new byte[10000000];
-        logger.info("UDP server started on port: " + port);
+        //logger.info("UDP server started on port: " + port);
         final DatagramSocket socket = new SimpleSimulatedDatagramSocket(port, 0.3, 1000);
+        new Thread(new Output()).start();
 
         while (running.get()) {
             final DatagramPacket packet = new DatagramPacket(rcvBuf, rcvBuf.length);
             socket.receive(packet);
             final String rcvStr = new String(packet.getData(), packet.getOffset(), packet.getLength());
-            logger.info("SERVER: received: " + rcvStr + " On port: " + packet.getPort());
+            //logger.info("SERVER: received: " + rcvStr + " On port: " + packet.getPort());
             final ReadingServer reading = gson.fromJson(rcvStr, ReadingServer.class);
             reading.setPort(packet.getPort());
             readings.add(reading);
             newReadings.add(reading);
-            vector.get(sensor.getId()).setValue(vector.get(sensor.getId()).getValue() + 1);
+            final Tuple tuple = vector.getOrDefault(sensor.getId(), new Tuple(sensor.getId(), 0));
+            tuple.setValue(tuple.getValue() + 1);
+            vector.put(sensor.getId(), tuple);
+            reading.getVector().remove(tuple);
+            reading.getVector().add(new Tuple(tuple.getSensorId(), tuple.getValue()));
             reading.getVector().stream().filter(e -> !Objects.equals(e.getSensorId(), sensor.getId())).forEach(e -> {
                 Tuple t = vector.getOrDefault(e.getSensorId(), new Tuple(e.getSensorId(), e.getValue()));
                 if (t.getValue() < e.getValue()) {

@@ -28,13 +28,12 @@ public class Output implements Runnable {
                 throw new RuntimeException(e);
             }
         }
-        generateOutputEnd();
     }
 
     private void generateOutput() {
         final List<Reading> readings = new ArrayList<>(NodeClient.newReadings.stream().toList());
         NodeClient.newReadings.clear();
-        readings.addAll(NodeServer.newReadings.stream().map(this::map).toList());
+        readings.addAll(NodeServer.newReadings.stream().map(ReadingServer::toReading).toList());
         NodeServer.newReadings.clear();
         final SkalarComparator skalarComparator = new SkalarComparator();
         readings.sort(skalarComparator);
@@ -42,13 +41,13 @@ public class Output implements Runnable {
         final VectorComparator vectorComparator = new VectorComparator();
         readings.sort(vectorComparator);
         logger.info("SORTED BY VECTOR: " + readings);
-        logger.info("AVERAGE: " + readings.stream().mapToDouble(Reading::getNo2).average().orElse(0));
+        logger.info("AVERAGE: " + readings.stream().filter(reading -> reading.getNo2() != null).mapToDouble(Reading::getNo2).average().orElse(0));
     }
 
-    private void generateOutputEnd() {
+    private static void generateOutputEnd() {
         final List<Reading> readings = new ArrayList<>(NodeClient.readingsAll.stream().toList());
         NodeClient.newReadings.clear();
-        readings.addAll(NodeServer.readings.stream().map(this::map).toList());
+        readings.addAll(NodeServer.readings.stream().map(ReadingServer::toReading).toList());
         NodeServer.newReadings.clear();
         final SkalarComparator skalarComparator = new SkalarComparator();
         readings.sort(skalarComparator);
@@ -56,16 +55,11 @@ public class Output implements Runnable {
         final VectorComparator vectorComparator = new VectorComparator();
         readings.sort(vectorComparator);
         logger.info("FINAL SORT BY VECTOR: " + readings);
-        logger.info("AVERAGE: " + readings.stream().mapToDouble(Reading::getNo2).average().orElse(0));
+        logger.info("AVERAGE: " + readings.stream().filter(reading -> reading.getNo2() != null).mapToDouble(Reading::getNo2).average().orElse(0));
     }
 
     public static void stopOutput() {
         running.set(false);
-
-    }
-
-    private Reading map(ReadingServer readingServer) {
-        return new Reading(readingServer.getId(), readingServer.getNo2(), readingServer.getTime(), readingServer.getVector());
-
+        generateOutputEnd();
     }
 }

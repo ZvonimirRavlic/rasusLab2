@@ -64,7 +64,6 @@ public class NodeApplication {
         }
 
         new Thread(new NodeServer(sensor.getIpPort().getPort())).start();
-        new Thread(new Output()).start();
 
         while (true) {
             final ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(5000));

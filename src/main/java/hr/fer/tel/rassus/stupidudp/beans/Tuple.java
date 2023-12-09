@@ -36,6 +36,14 @@ public class Tuple {
     }
 
     @Override
+    public String toString() {
+        return "Tuple{" +
+                "sensorId=" + sensorId +
+                ", value=" + value +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(sensorId);
     }

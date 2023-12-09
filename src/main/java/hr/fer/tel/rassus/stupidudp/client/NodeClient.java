@@ -48,7 +48,7 @@ public class NodeClient implements Runnable {
         while (running.get()) {
             final Reading newReading = sensor.getReading();
             vector.getOrDefault(sensor.getId(), new Tuple(sensor.getId(), 1)).setValue(vector.getOrDefault(sensor.getId(), new Tuple(sensor.getId(), 0)).getValue() + 1);
-            newReading.setVector(vector.values().stream().toList());
+            newReading.setVector(vector.values().stream().map(t -> new Tuple(t.getSensorId(), t.getValue())).toList());
             confirmations.add(newReading.getId());
             readings.put(newReading.getId(), newReading);
             newReadings.add(newReading);

@@ -1,10 +1,12 @@
 package hr.fer.tel.rassus.stupidudp.beans;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ReadingServer {
+public class ReadingServer implements Comparable<ReadingServer> {
     private Long id;
     private Integer port;
     private Double no2;
@@ -62,5 +64,13 @@ public class ReadingServer {
     @Override
     public int hashCode() {
         return Objects.hash(id, port);
+    }
+
+    @Override
+    public int compareTo(ReadingServer o) {
+        return ObjectUtils.compare(this.no2, o.no2);
+    }
+    public static Reading toReading(ReadingServer readingServer){
+        return new Reading(readingServer.getId(), readingServer.getNo2(), readingServer.getTime(), readingServer.getVector());
     }
 }
