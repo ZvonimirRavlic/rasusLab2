@@ -46,9 +46,7 @@ public class Output implements Runnable {
 
     private static void generateOutputEnd() {
         final List<Reading> readings = new ArrayList<>(NodeClient.readingsAll.stream().toList());
-        NodeClient.newReadings.clear();
         readings.addAll(NodeServer.readings.stream().map(ReadingServer::toReading).toList());
-        NodeServer.newReadings.clear();
         final SkalarComparator skalarComparator = new SkalarComparator();
         readings.sort(skalarComparator);
         logger.info("FINAL SORT BY SKALAR: " + readings);

@@ -49,3 +49,7 @@ e
 5src/main/java/hr/fer/tel/rassus/stupidudp/Output.java,7/7/77d37cf2b33e57560a703a37df4cbc3d9960118f
 n
 >src/main/java/hr/fer/tel/rassus/stupidudp/NodeApplication.java,c/6/c605118c4f4328c80c7e4981e4cf014e9755654c
+S
+#.idea/sonarlint/issuestore/index.pb,9/f/9fe84ebb15faf917b7def6236dba604453cc61e0
+]
+-.idea/sonarlint/securityhotspotstore/index.pb,8/8/88a9255124c95bdc913197c120a8d560edc59c8e
