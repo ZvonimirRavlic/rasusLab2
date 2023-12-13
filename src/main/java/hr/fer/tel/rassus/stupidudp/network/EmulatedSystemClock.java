@@ -27,9 +27,9 @@ public class EmulatedSystemClock {
 
     public long currentTimeMillis() {
         long current = System.currentTimeMillis();
-        long diff = current + latency - startTime;
+        long diff = current - startTime;
         double coef = diff / 1000d;
-        return startTime + Math.round(diff * Math.pow((1 + jitter), coef));
+        return startTime + Math.round(diff * Math.pow((1 + jitter), coef)) + latency;
     }
 
     public void updateTimeMillis(long remoteTime) {
